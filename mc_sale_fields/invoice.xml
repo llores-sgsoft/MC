@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<openerp>
+        <data>
+               <record id="view_invoice_form_mc" model="ir.ui.view">
+				    <field name="name">account.invoice_form</field>
+				    <field name="model">account.invoice</field>
+				    <field name="type">form</field>
+				    <field name="inherit_id" ref="account.invoice_form"/>
+				    <field name="arch" type="xml">
+		            	<xpath expr="//notebook/page[@string='Other Info']/group[@col='4']" position="inside">
+				    	    <group>
+				                  <field name="marca_modelo"/>
+				                  <field name="contrato"/>
+				                  <field name="economico"/>
+				                  <field name="mantenimiento"/>
+				                  <field name="suministro"/>
+				            </group>				            
+				         </xpath>					
+					</field>			       
+			  </record>
+			  
+			  <record id="view_account_invoice_filter_mc" model="ir.ui.view">
+	        	<field name="inherit_id" ref="account.view_account_invoice_filter"/>
+	            <field name="model">account.invoice</field>
+	            <field name="arch" type="xml">
+	            	<xpath expr="/search[@string='Search Invoice']/field[@name='number']" position="after">
+                		<field name="marca_modelo"/>
+						<field name="contrato"/>
+						<field name="economico"/>
+						<field name="mantenimiento"/>
+						<field name="suministro"/>
+	                </xpath>	                
+	                <xpath expr="/search[@string='Search Invoice']/group[@string='Group By...']/filter[@string='Due Date']" position="after">
+	                    <filter string="Marca/Modelo" icon="terp-personal" domain="[]" context="{'group_by':'marca_modelo'}"/>
+	                    <filter string="Contrato" icon="terp-personal" domain="[]" context="{'group_by':'contrato'}"/>
+	                    <filter string="Economico" icon="terp-personal" domain="[]" context="{'group_by':'economico'}"/>
+	                    <filter string="Mantenimiento" icon="terp-personal" domain="[]" context="{'group_by':'mantenimiento'}"/>
+	                    <filter string="Suministro" icon="terp-personal" domain="[]" context="{'group_by':'suministro'}"/>	         
+	                </xpath> 	                              
+	            </field>
+	        </record>        
+        </data>
+</openerp>

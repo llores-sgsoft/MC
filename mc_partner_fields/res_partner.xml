@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<openerp>
+        <data>
+               <record id="view_partner_form_mc" model="ir.ui.view">
+				    <field name="name">res.partner.form</field>
+				    <field name="model">res.partner</field>
+				    <field name="type">form</field>
+				    <field name="inherit_id" ref="base.view_partner_form"/>
+				    <field name="arch" type="xml">
+						<field name='email' position="after">
+							<field name="division"/>	
+							<field name="sub_division"/>
+							<field name="zona"/>
+						 </field>						
+					</field>			       
+			  </record>
+			  
+			  <record id="view_res_partner_filter_mc" model="ir.ui.view">
+	        	<field name="inherit_id" ref="base.view_res_partner_filter"/>
+	            <field name="model">res.partner</field>
+	            <field name="arch" type="xml">
+	            	<xpath expr="/search[@string='Search Partner']/field[@name='name']" position="after">
+	                    <field name="division"/>	
+						<field name="sub_division"/>
+						<field name="zona"/>
+	                </xpath>	                
+	                <xpath expr="/search[@string='Search Partner']/group[@string='Group By...']/filter[@string='Country']" position="after">
+	                    <filter string="Division" icon="terp-personal" domain="[]" context="{'group_by':'division'}"/>
+	                    <filter string="Sub-division" icon="terp-personal" domain="[]" context="{'group_by':'sub_division'}"/>
+	                    <filter string="Zona" icon="terp-personal" domain="[]" context="{'group_by':'zona'}"/>
+	                </xpath> 	                              
+	            </field>
+	        </record>
+        </data>
+</openerp>
