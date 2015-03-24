@@ -7,7 +7,7 @@
 				    <field name="type">form</field>
 				    <field name="inherit_id" ref="sale.view_order_form"/>
 				    <field name="arch" type="xml">
-		            	<xpath expr="//notebook/page[@string='Other Information']/group/group/field[@name='invoiced']" position="after">
+		            	<xpath expr="//notebook/page[@string='Other Information']/group" position="inside">
 				    	    <group>
 				                  <field name="marca_modelo"/>
 				                  <field name="contrato"/>
