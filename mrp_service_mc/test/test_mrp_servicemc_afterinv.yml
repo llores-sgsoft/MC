@@ -1,0 +1,36 @@
+-
+  In order to test Invoice Method 'After servicemc'.
+-
+  I confirm servicemc order taking Invoice Method 'After servicemc'.
+-
+  !workflow {model: mrp.servicemc, action: servicemc_confirm, ref: mrp_servicemc_rmrp0}
+-
+  I start the servicemcing process by clicking on "Start servicemc" button for Invoice Method 'After servicemc'.
+-
+  !workflow {model: mrp.servicemc, action: servicemc_ready, ref: mrp_servicemc_rmrp0}
+-
+  I check the state is in "Under servicemc".
+-
+  !assert {model: mrp.servicemc, id: mrp_servicemc_rmrp0}:
+      - state == 'under_servicemc'
+-
+  servicemcing process for product is in Done state and I end servicemc process by clicking on "End servicemc" button.
+-
+  !workflow {model: mrp.servicemc, action: action_servicemc_end, ref: mrp_servicemc_rmrp0}
+-
+  I define Invoice Method 'After servicemc' option in this servicemc order.
+  so I create invoice by clicking on "Make Invoice" wizard.
+-
+  !record {model: mrp.servicemc.make_invoice, id: mrp_servicemc_make_invoice_0}:
+    group: 1
+-
+  I click on "Create Invoice" button of this wizard to make invoice.
+-
+  !python {model: mrp.servicemc.make_invoice}: |
+    self.make_invoices(cr, uid, [ref("mrp_servicemc_make_invoice_0")], {"active_ids": [ref("mrp_servicemc.mrp_servicemc_rmrp0")]})
+-
+  I check that invoice is created for this servicemc order.
+-
+  !python {model: mrp.servicemc}: |
+     servicemc_id = self.browse(cr, uid, [ref('mrp_servicemc_rmrp0')], context=context)[0]
+     assert servicemc_id.invoice_id.id, _("No invoice exists for this servicemc order")

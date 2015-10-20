@@ -1,0 +1,14 @@
+<openerp>
+	<data>
+	
+	    <report auto="False"
+	     id="report_print_service"
+	     model="mrp.servicemc"
+	    name="mrp.report.print.service.webkit"
+	    file="mrp_service_mc/report/print_service.mako"
+	    string="Reporte Servicio"
+	    report_type="webkit"/>
+	    
+	</data>
+</openerp>
+

@@ -1,0 +1,8 @@
+-
+  In order to test the PDF reports defined on a MRP servicemc, we will print an Order Report
+-
+  !python {model: mrp.servicemc}: |
+    import netsvc, tools, os
+    (data, format) = netsvc.Localservicemc('report.servicemc.order').create(cr, uid, [ref('mrp_servicemc.mrp_servicemc_rmrp0')], {}, {})
+    if tools.config['test_report_directory']:
+        file(os.path.join(tools.config['test_report_directory'], 'mrp_servicemc-order_report.'+format), 'wb+').write(data)

@@ -1,0 +1,28 @@
+-
+  In order to test the cancel flow of mrp_servicemc module,
+  I start by creating new copy servicemc order for "PC Assemble SC234" product.
+-
+  !python {model: mrp.servicemc}: |
+    copy_id = self.copy(cr, uid, ref("mrp_servicemc_rmrp1"))
+    context.update({'new_id':copy_id})
+-
+  I Cancel this servicemc order.
+-
+  !python {model: mrp.servicemc.cancel}: |
+    new_id = context.get('new_id')
+    context.update({"active_model":"mrp.servicemc", "active_ids": [new_id],"active_id": new_id})
+    self.fields_view_get(cr, uid, False, "form", context)
+    self.cancel_servicemc(cr, uid, [new_id], context)
+-
+  I check that servicemc order is in "Cancel" state.
+-
+  !python {model: mrp.servicemc}: |
+    new_id = context.get('new_id')
+    order = self.browse(cr, uid, [new_id])[0]
+    assert order.state == 'cancel',"servicemc order should be in Cancel state."
+-
+  I Reopen the servicemc order as new.
+-
+  !python {model: mrp.servicemc}: |
+    new_id = context.get('new_id')
+    self.action_cancel_draft(cr, uid, [new_id])

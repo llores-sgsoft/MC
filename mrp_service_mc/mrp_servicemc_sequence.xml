@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="seq_type_mrp_servicemc" model="ir.sequence.type">
+            <field name="name">Ordenes de Servicio</field>
+            <field name="code">mrp.servicemc</field>
+        </record>
+        <record id="seq_mrp_servicemc" model="ir.sequence">
+            <field name="name">Ordenes de Servicio</field>
+            <field name="code">mrp.servicemc</field>
+            <field name="prefix">OS</field>
+            <field name="padding">6</field>
+        </record>
+    </data>
+</openerp>

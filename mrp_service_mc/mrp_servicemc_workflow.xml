@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="wkf_servicemc" model="workflow">
+            <field name="name">mrp.servicemc.basic</field>
+            <field name="osv">mrp.servicemc</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <!-- Activity -->
+        <record id="act_draft" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+
+        <record id="act_confirm" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">confirm</field>
+            <field name="kind">function</field>
+            <field name="action">action_confirm()</field>
+            <field name="split_mode">OR</field>
+        </record>
+        <record id="act_wait_invoice" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">wait_invoice</field>
+        </record>
+        <record id="act_wait_servicemc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">wait_servicemc</field>
+        </record>
+        <record id="act_servicemc_ready" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">Ready servicemc</field>
+            <field name="kind">function</field>
+            <field name="action">action_servicemc_ready()</field>
+        </record>
+        <record id="act_cancel3" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">cancel3</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">stopall</field>
+            <field name="action">action_cancel()</field>
+        </record>
+        <record id="act_done" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">done</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_servicemc_done()</field>
+            <field name="join_mode">XOR</field>
+        </record>
+        <record id="act_servicemc_start" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">Start servicemc</field>
+            <field name="kind">function</field>
+            <field name="action">action_servicemc_start()</field>
+        </record>
+        <record id="act_invoice_end" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">invoice_end</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_invoice_create()</field>
+        </record>
+        <record id="act_servicemc_end" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">servicemc_end</field>
+            <field name="kind">function</field>
+            <field name="action">action_servicemc_end()</field>
+        </record>
+        <record id="act_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">cancel</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">stopall</field>
+            <field name="action">action_cancel()</field>
+        </record>
+        <record id="act_cancel2" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_servicemc"/>
+            <field name="name">cancel2</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">stopall</field>
+            <field name="action">action_cancel()</field>
+        </record>
+
+
+        <!-- Transistion -->
+
+
+        <record id="trans_draft_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_confirm"/>
+            <field name="signal">servicemc_confirm</field>
+        </record>
+
+        <record id="trans_draft_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+
+        <record id="trans_confirm_wait_invoice" model="workflow.transition">
+            <field name="act_from" ref="act_confirm"/>
+            <field name="act_to" ref="act_wait_invoice"/>
+            <field name="condition">invoice_method=='b4servicemc'</field>
+        </record>
+
+        <record id="trans_confirm_wait_ship" model="workflow.transition">
+            <field name="act_from" ref="act_confirm"/>
+            <field name="act_to" ref="act_wait_servicemc"/>
+            <field name="condition">(invoice_method=='after_servicemc' or invoice_method=='none')</field>
+        </record>
+
+        <record id="trans_wait_invoice_invoice" model="workflow.transition">
+            <field name="act_from" ref="act_wait_invoice"/>
+            <field name="act_to" ref="act_invoice_end"/>
+            <field name="signal">action_invoice_create</field>
+        </record>
+
+        <record id="trans_invoice_start_servicemc" model="workflow.transition">
+            <field name="act_from" ref="act_invoice_end"/>
+            <field name="act_to" ref="act_servicemc_ready"/>
+            <field name="condition">invoice_method=='b4servicemc'</field>
+        </record>
+
+        <record id="trans_wait_invoice_cancel2" model="workflow.transition">
+            <field name="act_from" ref="act_wait_invoice"/>
+            <field name="act_to" ref="act_cancel2"/>
+            <field name="signal">cancel</field>
+        </record>
+
+        <record id="trans_invoice_end_done" model="workflow.transition">
+            <field name="act_from" ref="act_invoice_end"/>
+            <field name="act_to" ref="act_done"/>
+            <field name="condition">invoice_method=='after_servicemc'</field>
+        </record>
+
+        <record id="trans_wait_servicemc_start" model="workflow.transition">
+            <field name="act_from" ref="act_wait_servicemc"/>
+            <field name="act_to" ref="act_servicemc_start"/>
+            <field name="signal">servicemc_ready</field>
+        </record>
+
+        <record id="trans_ready_servicemc_start" model="workflow.transition">
+            <field name="act_from" ref="act_servicemc_ready"/>
+            <field name="act_to" ref="act_servicemc_start"/>
+            <field name="signal">servicemc_ready</field>
+        </record>
+
+       <record id="trans_servicemc_servicemc_end" model="workflow.transition">
+            <field name="act_from" ref="act_servicemc_start"/>
+            <field name="act_to" ref="act_servicemc_end"/>
+            <field name="signal">action_servicemc_end</field>
+        </record>
+
+        <record id="trans_reapir_end_done" model="workflow.transition">
+            <field name="act_from" ref="act_servicemc_end"/>
+            <field name="act_to" ref="act_done"/>
+            <field name="condition">invoice_method=='none' or invoice_method=='b4servicemc'</field>
+        </record>
+
+        <record id="trans_reapir_end_invoice" model="workflow.transition">
+            <field name="act_from" ref="act_servicemc_end"/>
+            <field name="act_to" ref="act_wait_invoice"/>
+            <field name="condition">invoice_method=='after_servicemc'</field>
+        </record>
+        <record id="trans_wait_servicemc_cancel3" model="workflow.transition">
+            <field name="act_from" ref="act_wait_servicemc"/>
+            <field name="act_to" ref="act_cancel3"/>
+            <field name="signal">cancel</field>
+        </record>
+
+    </data>
+</openerp>

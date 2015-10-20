@@ -1,0 +1,29 @@
+-
+  Now I test for Invoice Method 'Before servicemc'.
+-
+  I confirm servicemc order for Invoice Method 'Before servicemc'.
+-
+  !workflow {model: mrp.servicemc, action: servicemc_confirm, ref: mrp_servicemc_rmrp2}
+-
+  I change servicemc order state to 'Ready'.
+-
+  !python {model: mrp.servicemc}: |
+    self.action_servicemc_ready(cr, uid, [ref('mrp_servicemc_rmrp2')], context=None)
+-
+  I click on "Create Invoice" button of this wizard to make invoice.
+-
+  !workflow {model: mrp.servicemc, action: action_invoice_create, ref: mrp_servicemc_rmrp2}
+-
+  I check that invoice is created for this servicemc order.
+-
+  !python {model: mrp.servicemc}: |
+     servicemc_id = self.browse(cr, uid, [ref('mrp_servicemc_rmrp2')], context=context)[0]
+     assert servicemc_id.invoice_id.id, _("No invoice exists for this servicemc order.")
+-
+  I start the servicemcing process by clicking on "Start servicemc" button.
+-
+  !workflow {model: mrp.servicemc, action: servicemc_ready, ref: mrp_servicemc_rmrp2}
+-
+  servicemcing process for this product is in Done state and I end this process by clicking on "End servicemc" button for Invoice Method 'Before servicemc'.
+-
+  !workflow {model: mrp.servicemc, action: action_servicemc_end, ref: mrp_servicemc_rmrp2}
